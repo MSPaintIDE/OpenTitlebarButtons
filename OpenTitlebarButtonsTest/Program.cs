@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -24,58 +25,33 @@ namespace OpenTitlebarButtonsTest
             Console.WriteLine(NativeThemeUtils.GetThemesFolder());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            /*
-            NativeThemeUtils.GetBasicWindowBitmap()?.Save("testbasic.png", ImageFormat.Png);
-
-            var frm = new Form1
+            
+            new Thread(() =>
             {
-                StartPosition = FormStartPosition.CenterScreen
-            };
-
-
-            frm.Show();
-            var hasPainted = false;
-            _showPrm = new TaskCompletionSource<object>();
-            frm.Paint += (s, e) =>
-            {
-                if (hasPainted) return;
-                hasPainted = true;
-                _showPrm.TrySetResult(new object());
-            };
-
-            Application.DoEvents();
-
-            _showPrm.Task.GetAwaiter().GetResult();
-
-            var sb = new StringBuilder();
-
-            sb.AppendLine("Environment.OSVersion.Version.ToString(): " + Environment.OSVersion.Version.ToString());
-
-
-            var result = NativeThemeUtils.GetTitleBarInfoEx(frm.Handle, out var pti);
-
-            sb.AppendLine("TitlebarInfoEx: " + JsonConvert.SerializeObject(pti));
-
-            sb.AppendLine("frm.Location: " + frm.Location.ToString());
-
-            var screenBitmap = GetScreenShot(pti);
-            screenBitmap.Save("scr_bmp.bmp");
-
-
-
-            Console.WriteLine(sb.ToString());
-
-            Console.ReadKey();
-
-            frm.Dispose();
-            */
-            var th = new Thread(() =>
-                Application.Run(new Form1
+                while (true)
                 {
-                    StartPosition = FormStartPosition.CenterScreen
-                }));
-            th.SetApartmentState(ApartmentState.STA);
-            th.Start();
+                }
+            }).Start();
+
+            Process process = Process.GetProcessesByName("mspaint").FirstOrDefault();
+            if (process == null)
+            {
+                Console.WriteLine("Cannot find any Paint process.");
+                return;
+            }
+
+            Console.WriteLine("Shit");
+
+            var frm = new TitlebarButtonHosterForm(new NativeUnmanagedWindow(process.MainWindowHandle));
+            frm.icon = (Bitmap) Image.FromFile("E:\\InjectTest\\MSPaintIDE\\PaintInjector\\Resources\\run.png");
+            frm.XOffset = 173 + 5;
+            frm.YOffset = 30;
+            
+            frm.MouseHover += (sender, args) => { Console.WriteLine("Enter"); };
+            frm.MouseLeave += (sender, args) => { Console.WriteLine("Leave"); };
+            frm.Click += (sender, args) => { Console.WriteLine("Click"); };
+
+            frm.MouseMove += (sender, args) => { Console.WriteLine("11111111111"); };
 
         }
 

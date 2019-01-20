@@ -6,6 +6,7 @@ using OpenTitlebarButtons.Enums;
 using OpenTitlebarButtons.Native;
 using System.Resources;
 using static Vanara.PInvoke.User32_Gdi;
+using Gma.System.MouseKeyHook;
 
 namespace OpenTitlebarButtons.Utils
 {
@@ -14,6 +15,7 @@ namespace OpenTitlebarButtons.Utils
         private const int WmMouseactivate = 0x0021, MaNoactivate = 0x0003;
         private int _xOffset;
         private int _yOffset;
+        private bool hovering;
 
         public int XOffset
         {
@@ -35,12 +37,22 @@ namespace OpenTitlebarButtons.Utils
             get => _yOffset;
         }
 
-        private Bitmap _image;
+        // The default icon shown
+        private Bitmap _icon;
 
-        public Bitmap image
+        public Bitmap icon
         {
-            get => _image;
-            set => SetBitmap(_image = value);
+            get => _icon;
+            set => SetBitmap(_icon = value);
+        }
+
+        // When the element is being hovered over
+        private Bitmap _hoverIcon;
+
+        public Bitmap hoverIcon
+        {
+            get => _hoverIcon;
+            set => _hoverIcon = value;
         }
 
         public event EventHandler<CalculateCoordinateEventArgs> CalculateCoords;
@@ -55,6 +67,17 @@ namespace OpenTitlebarButtons.Utils
             Attach(parent);
             SetBitmap(NativeThemeUtils.GetDwmWindowButton(AeroTitlebarButtonPart.MinimizeButton,
                 TitlebarButtonState.Hot) as Bitmap);
+            
+            IKeyboardMouseEvents globalHook = Hook.GlobalEvents();
+            globalHook.MouseMove += (sender, args) =>
+            {
+                bool nowHovering = Bounds.Contains(args.Location);
+                if (nowHovering != hovering)
+                {
+                    SetBitmap(nowHovering ? hoverIcon : icon);
+                    hovering = nowHovering;
+                }
+            };
         }
 
         protected override bool ShowWithoutActivation => true;
