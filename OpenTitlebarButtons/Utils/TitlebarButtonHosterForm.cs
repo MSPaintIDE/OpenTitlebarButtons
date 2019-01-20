@@ -88,6 +88,7 @@ namespace OpenTitlebarButtons.Utils
         {
             if (m.Msg == WmMouseactivate)
             {
+                OnClick(EventArgs.Empty);
                 m.Result = (IntPtr) MaNoactivate;
                 return;
             }
