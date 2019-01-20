@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
@@ -15,7 +16,7 @@ namespace OpenTitlebarButtons.Utils
         private const int WmMouseactivate = 0x0021, MaNoactivate = 0x0003;
         private int _xOffset;
         private int _yOffset;
-        private bool hovering;
+        public bool hovering;
 
         public int XOffset
         {
@@ -59,7 +60,7 @@ namespace OpenTitlebarButtons.Utils
 
         private HandleRef _hwndRef;
 
-        public TitlebarButtonHosterForm(NativeUnmanagedWindow parent)
+        public TitlebarButtonHosterForm(EventManager eventManager, NativeUnmanagedWindow parent)
         {
             AutoScaleMode = AutoScaleMode.None;
             ParentWindow = parent;
@@ -68,16 +69,7 @@ namespace OpenTitlebarButtons.Utils
             SetBitmap(NativeThemeUtils.GetDwmWindowButton(AeroTitlebarButtonPart.MinimizeButton,
                 TitlebarButtonState.Hot) as Bitmap);
             
-            IKeyboardMouseEvents globalHook = Hook.GlobalEvents();
-            globalHook.MouseMove += (sender, args) =>
-            {
-                bool nowHovering = Bounds.Contains(args.Location);
-                if (nowHovering != hovering)
-                {
-                    SetBitmap(nowHovering ? hoverIcon : icon);
-                    hovering = nowHovering;
-                }
-            };
+            eventManager.AddButton(this);
         }
 
         protected override bool ShowWithoutActivation => true;

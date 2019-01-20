@@ -31,7 +31,7 @@ namespace OpenTitlebarButtonsTest
             }
             else
                 w.Dispose();*/
-            var frm = new TitlebarButtonHosterForm(new NativeUnmanagedWindow(new IntPtr(0x120802)));
+            var frm = new TitlebarButtonHosterForm(null, new NativeUnmanagedWindow(new IntPtr(0x120802)));
             /*frm.LocationChanged += (s, e) =>
             {
                 //Console.WriteLine(@"Location changed");

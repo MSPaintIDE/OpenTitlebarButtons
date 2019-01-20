@@ -42,7 +42,9 @@ namespace OpenTitlebarButtonsTest
 
             Console.WriteLine("Shit");
 
-            var frm = new TitlebarButtonHosterForm(new NativeUnmanagedWindow(process.MainWindowHandle));
+            EventManager eventManager = new EventManager();
+            
+            var frm = new TitlebarButtonHosterForm(eventManager, new NativeUnmanagedWindow(process.MainWindowHandle));
             frm.icon = (Bitmap) Image.FromFile("E:\\InjectTest\\MSPaintIDE\\PaintInjector\\Resources\\run.png");
             frm.XOffset = 173 + 5;
             frm.YOffset = 30;
