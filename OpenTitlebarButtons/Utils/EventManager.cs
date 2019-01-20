@@ -17,6 +17,7 @@ namespace OpenTitlebarButtons.Utils
                 foreach (KeyValuePair<TitlebarButtonHosterForm, OnHover> entry in buttons)
                 {
                     TitlebarButtonHosterForm button = entry.Key;
+                    if (button.hoverIcon == null) continue;
                     bool nowHovering = button.Bounds.Contains(args.Location);
                     if (nowHovering != button.hovering)
                     {
