@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
-using OpenTitlebarButtons;
 using OpenTitlebarButtons.Native;
 using OpenTitlebarButtons.Utils;
 
@@ -43,7 +38,7 @@ namespace OpenTitlebarButtonsTest
 
             EventManager eventManager = new EventManager();
             
-            var frm = new TitlebarButtonHosterForm(eventManager, new NativeUnmanagedWindow(process.MainWindowHandle));
+            var frm = new ButtonHoster(eventManager, new NativeUnmanagedWindow(process.MainWindowHandle));
             frm.icon = (Bitmap) Image.FromFile("E:\\InjectTest\\MSPaintIDE\\PaintInjector\\Resources\\run.png");
             frm.XOffset = 173 + 5;
             frm.YOffset = 30;

@@ -7,7 +7,7 @@ using static Vanara.PInvoke.User32_Gdi;
 
 namespace OpenTitlebarButtons.Utils
 {
-    public class TitlebarButtonHosterForm : PerPixelAlphaWindow
+    public abstract class ElementHoster : PerPixelAlphaWindow
     {
         private const int WmMouseactivate = 0x0021, MaNoactivate = 0x0003;
         private int _xOffset;
@@ -21,7 +21,7 @@ namespace OpenTitlebarButtons.Utils
             set
             {
                 _xOffset = value;
-                Relocate(ParentWindow);
+                Relocate();
             }
             get => _xOffset;
         }
@@ -31,37 +31,19 @@ namespace OpenTitlebarButtons.Utils
             set
             {
                 _yOffset = value;
-                Relocate(ParentWindow);
+                Relocate();
             }
             get => _yOffset;
         }
 
-        // The default icon shown
-        private Bitmap _icon;
-
-        public Bitmap icon
-        {
-            get => _icon;
-            set => SetBitmap(_icon = value);
-        }
-
-        // When the element is being hovered over
-        private Bitmap _hoverIcon;
-
-        public Bitmap hoverIcon
-        {
-            get => _hoverIcon;
-            set => _hoverIcon = value;
-        }
-
         private HandleRef _hwndRef;
 
-        public TitlebarButtonHosterForm(EventManager eventManager, NativeUnmanagedWindow parent)
+        public ElementHoster(EventManager eventManager, NativeUnmanagedWindow parent)
         {
             AutoScaleMode = AutoScaleMode.None;
             ParentWindow = parent;
             Show(NativeWindow.FromHandle(parent.Handle));
-            Attach(parent);
+            Attach();
             
             eventManager.AddButton(this);
         }
@@ -88,21 +70,21 @@ namespace OpenTitlebarButtons.Utils
             _hwndRef = new HandleRef(this, Handle);
         }
 
-        private void Attach(NativeUnmanagedWindow parent)
+        private void Attach()
         {
-            parent.WindowChanged += (s, e) => Relocate(parent);
-            SetWindowPos(new HandleRef(this, Handle), parent.Handle, 0, 0, 0, 0,
+            ParentWindow.WindowChanged += (s, e) => Relocate();
+            SetWindowPos(new HandleRef(this, Handle), ParentWindow.Handle, 0, 0, 0, 0,
                 SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
             NativeThemeUtils.SetWindowLong(Handle, NativeThemeUtils.GWLParameter.GWL_HWNDPARENT,
-                parent.Handle.ToInt32());
-            Relocate(parent);
+                ParentWindow.Handle.ToInt32());
+            Relocate();
         }
 
-        private void Relocate(NativeUnmanagedWindow parent)
+        public void Relocate()
         {
-            var loc = parent.Location;
+            var loc = ParentWindow.Location;
 
-            var args = new CalculateCoordinateEventArgs(loc.X + XOffset, loc.Y + YOffset, parent.Bounds);
+            var args = new CalculateCoordinateEventArgs(loc.X + XOffset, loc.Y + YOffset, ParentWindow.Bounds);
 
             EventHandler<CalculateCoordinateEventArgs> handler = CalculateCoords;
             handler?.Invoke(this, args);
@@ -111,7 +93,7 @@ namespace OpenTitlebarButtons.Utils
                 SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOSIZE);
         }
 
-        internal void OnHover(HoverArgs args)
+        internal virtual void OnHover(HoverArgs args)
         {
             EventHandler<HoverArgs> handler = Hover;
             handler?.Invoke(this, args);
