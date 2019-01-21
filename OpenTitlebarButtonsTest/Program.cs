@@ -22,7 +22,6 @@ namespace OpenTitlebarButtonsTest
     [STAThread]
         static void Main()
         {
-            Console.WriteLine(NativeThemeUtils.GetThemesFolder());
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             
@@ -55,40 +54,6 @@ namespace OpenTitlebarButtonsTest
 
             frm.MouseMove += (sender, args) => { Console.WriteLine("11111111111"); };
 
-        }
-
-
-        private static Bitmap GetScreenShot(Titlebarinfoex pti)
-        {
-            var bmpScreenshot = new Bitmap(pti.rcTitleBar.Width,
-                pti.rcTitleBar.Height,
-                PixelFormat.Format32bppArgb);
-
-            // Create a graphics object from the bitmap.
-            using (var g = Graphics.FromImage(bmpScreenshot))
-            {
-                g.CopyFromScreen(pti.rcTitleBar.X,
-                    pti.rcTitleBar.Y,
-                    0,
-                    0,
-                    pti.rcTitleBar.Size,
-                    CopyPixelOperation.SourceCopy);
-                var scr = Screen.FromPoint(Cursor.Position);
-                using (var bmp2 = new Bitmap(scr.Bounds.Width, scr.Bounds.Height))
-                {
-                    using (var g2 = Graphics.FromImage(bmp2))
-                    {
-                        g2.FillRectangle(Brushes.Red,
-                            pti.rgrect[(int) CchildrenTitlebarConstants.CchildrenTitlebarMinimizeButton]);
-                    }
-
-                    g.DrawImage(bmp2, new Rectangle(0, 0, pti.rcTitleBar.Width, pti.rcTitleBar.Height),
-                        new Rectangle(pti.rcTitleBar.X, pti.rcTitleBar.Y, pti.rcTitleBar.Width, pti.rcTitleBar.Height),
-                        GraphicsUnit.Pixel);
-                }
-            }
-
-            return bmpScreenshot;
         }
     }
 

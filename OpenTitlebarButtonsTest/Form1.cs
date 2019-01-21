@@ -1,13 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using OpenTitlebarButtons.Enums;
 using OpenTitlebarButtons.Native;
 using OpenTitlebarButtons.Utils;
 
@@ -37,23 +29,6 @@ namespace OpenTitlebarButtonsTest
                 //Console.WriteLine(@"Location changed");
             };*/
 
-        }
-
-        private int _rightOffset = -1;
-        private const int BtnsOffset = 10;
-
-        private void RelocateWindow(PerPixelAlphaWindow w)
-        {
-            if (_rightOffset == -1)
-            {
-                var r = NativeThemeUtils.GetTitleBarInfoEx(Handle);
-                var rectBtn = r.GetRectangle(CchildrenTitlebarConstants.CchildrenTitlebarMinimizeButton);
-                var rectTbl = r.rcTitleBar;
-                _rightOffset = rectTbl.Width - (rectTbl.right - rectBtn.left);
-            }
-
-            w.Left = Left + Width - BtnsOffset - _rightOffset;
-            w.Top = Top;
         }
     }
 }

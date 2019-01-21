@@ -13,7 +13,7 @@ namespace OpenTitlebarButtons.Utils
             IKeyboardMouseEvents globalHook = Hook.GlobalEvents();
             globalHook.MouseMove += (sender, args) =>
             {
-                foreach (KeyValuePair<TitlebarButtonHosterForm, OnHover> entry in buttons)
+                foreach (var entry in buttons)
                 {
                     TitlebarButtonHosterForm button = entry.Key;
                     if (button.hoverIcon == null) continue;

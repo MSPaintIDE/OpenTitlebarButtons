@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using OpenTitlebarButtons.Enums;
 using OpenTitlebarButtons.Native;
-using System.Resources;
 using static Vanara.PInvoke.User32_Gdi;
-using Gma.System.MouseKeyHook;
 
 namespace OpenTitlebarButtons.Utils
 {
@@ -66,8 +62,6 @@ namespace OpenTitlebarButtons.Utils
             ParentWindow = parent;
             Show(NativeWindow.FromHandle(parent.Handle));
             Attach(parent);
-            SetBitmap(NativeThemeUtils.GetDwmWindowButton(AeroTitlebarButtonPart.MinimizeButton,
-                TitlebarButtonState.Hot) as Bitmap);
             
             eventManager.AddButton(this);
         }
