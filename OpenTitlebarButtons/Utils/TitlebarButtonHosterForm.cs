@@ -17,6 +17,8 @@ namespace OpenTitlebarButtons.Utils
         private int _xOffset;
         private int _yOffset;
         public bool hovering;
+        public event EventHandler<CalculateCoordinateEventArgs> CalculateCoords;
+        public event EventHandler<HoverArgs> Hover;
 
         public int XOffset
         {
@@ -55,8 +57,6 @@ namespace OpenTitlebarButtons.Utils
             get => _hoverIcon;
             set => _hoverIcon = value;
         }
-
-        public event EventHandler<CalculateCoordinateEventArgs> CalculateCoords;
 
         private HandleRef _hwndRef;
 
@@ -115,6 +115,12 @@ namespace OpenTitlebarButtons.Utils
 
             SetWindowPos(_hwndRef, (IntPtr) 0, args.X, args.Y, 0, 0,
                 SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOSIZE);
+        }
+
+        internal void OnHover(HoverArgs args)
+        {
+            EventHandler<HoverArgs> handler = Hover;
+            handler?.Invoke(this, args);
         }
 
         public class CalculateCoordinateEventArgs : EventArgs

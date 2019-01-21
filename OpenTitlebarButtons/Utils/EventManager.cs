@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using Gma.System.MouseKeyHook;
 
@@ -24,6 +23,10 @@ namespace OpenTitlebarButtons.Utils
                         button.SetBitmap(nowHovering ? button.hoverIcon : button.icon);
                         button.hovering = nowHovering;
                         entry.Value?.Invoke();
+                        
+                        var hoverArgs = new HoverArgs();
+                        hoverArgs.hovering = nowHovering;
+                        button.OnHover(hoverArgs);
                     }
                 }
             };
