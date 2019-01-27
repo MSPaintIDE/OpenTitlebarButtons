@@ -25,6 +25,7 @@ namespace OpenTitlebarButtons.Utils
 
         public ButtonHoster(EventManager eventManager, NativeUnmanagedWindow parent) : base(eventManager, parent)
         {
+            eventManager.AddButton(this);
         }
 
 

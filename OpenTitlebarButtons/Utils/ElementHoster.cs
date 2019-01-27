@@ -9,6 +9,7 @@ namespace OpenTitlebarButtons.Utils
 {
     public abstract class ElementHoster : PerPixelAlphaWindow
     {
+        private readonly EventManager _eventManager;
         private const int WmMouseactivate = 0x0021, MaNoactivate = 0x0003;
         private int _xOffset;
         private int _yOffset;
@@ -40,12 +41,11 @@ namespace OpenTitlebarButtons.Utils
 
         public ElementHoster(EventManager eventManager, NativeUnmanagedWindow parent)
         {
+            _eventManager = eventManager;
             AutoScaleMode = AutoScaleMode.None;
             ParentWindow = parent;
             Show(NativeWindow.FromHandle(parent.Handle));
             Attach();
-            
-            eventManager.AddButton(this);
         }
 
         protected override bool ShowWithoutActivation => true;
@@ -93,6 +93,13 @@ namespace OpenTitlebarButtons.Utils
 
             SetWindowPos(_hwndRef, (IntPtr) 0, args.X, args.Y, 0, 0,
                 SetWindowPosFlags.SWP_NOACTIVATE | SetWindowPosFlags.SWP_NOZORDER | SetWindowPosFlags.SWP_NOSIZE);
+        }
+
+        public new void Close()
+        {
+            Console.WriteLine("Closing");
+            _eventManager.RemoveButton(this);
+            base.Close();
         }
 
         internal virtual void OnHover(HoverArgs args)

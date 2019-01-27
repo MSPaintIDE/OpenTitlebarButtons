@@ -36,6 +36,8 @@ namespace OpenTitlebarButtons.Utils
             };
         }
 
+        public void RemoveButton(ElementHoster button) => buttons.Remove(button);
+
         public void AddButton(ElementHoster button) => buttons.Add(button, null);
         public void AddButton(ElementHoster button, OnHover onHover) => buttons.Add(button, onHover);
 
