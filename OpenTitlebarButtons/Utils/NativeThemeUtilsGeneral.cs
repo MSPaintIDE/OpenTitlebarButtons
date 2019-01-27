@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using OpenTitlebarButtons.Native;
-using Vanara.Extensions;
-using Vanara.PInvoke;
 
 namespace OpenTitlebarButtons.Utils
 {

@@ -50,7 +50,7 @@ namespace OpenTitlebarButtons.Utils
 
         protected override bool ShowWithoutActivation => true;
 
-        public NativeUnmanagedWindow ParentWindow { get; }
+        public NativeUnmanagedWindow ParentWindow { get; private set; }
 
         protected override void WndProc(ref Message m)
         {
@@ -70,11 +70,13 @@ namespace OpenTitlebarButtons.Utils
             _hwndRef = new HandleRef(this, Handle);
         }
 
-        private void Attach()
+        public void Attach(NativeUnmanagedWindow parent = null, bool bringToFront = true)
         {
+            if (parent != null) ParentWindow = parent;
             ParentWindow.WindowChanged += (s, e) => Relocate();
             SetWindowPos(new HandleRef(this, Handle), ParentWindow.Handle, 0, 0, 0, 0,
                 SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
+            if (!bringToFront) return;
             NativeThemeUtils.SetWindowLong(Handle, NativeThemeUtils.GWLParameter.GWL_HWNDPARENT,
                 ParentWindow.Handle.ToInt32());
             Relocate();
