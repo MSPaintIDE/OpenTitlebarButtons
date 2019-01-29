@@ -11,12 +11,13 @@ namespace OpenTitlebarButtons.Utils
         private Dictionary<ElementHoster, OnHover> buttons =
             new Dictionary<ElementHoster, OnHover>();
 
+        private IKeyboardMouseEvents _globalHook;
+
         public EventManager()
         {
-            IKeyboardMouseEvents globalHook = Hook.GlobalEvents();
-            globalHook.MouseMove += (sender, args) =>
+            _globalHook = Hook.GlobalEvents();
+            _globalHook.MouseMove += (sender, args) =>
             {
-                
                 IntPtr hWnd = WindowFromPoint(args.Location);
                 
                 foreach (var entry in buttons)
@@ -35,6 +36,8 @@ namespace OpenTitlebarButtons.Utils
                 }
             };
         }
+
+        public IKeyboardMouseEvents GlobalHook => _globalHook;
 
         public void RemoveButton(ElementHoster button) => buttons.Remove(button);
 
