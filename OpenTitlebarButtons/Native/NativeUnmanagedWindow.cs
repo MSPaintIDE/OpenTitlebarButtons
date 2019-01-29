@@ -16,6 +16,7 @@ namespace OpenTitlebarButtons.Native
     {
         public IntPtr Handle { get; set; }
         private static WindowHookManager _manager;
+        private EventHandler<WindowHookManager.WindowHandleEventArgs> _windowChanged;
 
         public static WindowHookManager Manager => _manager ?? (_manager = new WindowHookManager());
 
@@ -23,11 +24,13 @@ namespace OpenTitlebarButtons.Native
         {
             Handle = hWnd;
             HandleRef = new HandleRef(this, hWnd);
-            Manager.WindowChanged += (s, e) =>
+            _windowChanged = (s, e) =>
             {
                 if (e.WindowHandle != Handle) return;
                 OnWindowChanged();
             };
+            
+            Manager.WindowChanged += _windowChanged;
         }
 
         public HandleRef HandleRef { get; set; }
@@ -85,6 +88,7 @@ namespace OpenTitlebarButtons.Native
 
         public void Dispose()
         {
+            Manager.WindowChanged -= _windowChanged;
         }
         
         public event EventHandler<EventArgs> WindowChanged;

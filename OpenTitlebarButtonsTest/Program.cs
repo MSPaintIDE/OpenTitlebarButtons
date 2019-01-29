@@ -34,8 +34,6 @@ namespace OpenTitlebarButtonsTest
                 return;
             }
 
-            Console.WriteLine("Shit");
-
             EventManager eventManager = new EventManager();
             
             var frm = new ButtonHoster(eventManager, new NativeUnmanagedWindow(process.MainWindowHandle));

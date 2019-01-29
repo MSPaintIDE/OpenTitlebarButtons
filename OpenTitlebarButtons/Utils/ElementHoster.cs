@@ -10,6 +10,7 @@ namespace OpenTitlebarButtons.Utils
     public abstract class ElementHoster : PerPixelAlphaWindow
     {
         private readonly EventManager _eventManager;
+        private EventHandler<EventArgs> _onChange;
         private const int WmMouseactivate = 0x0021, MaNoactivate = 0x0003;
         private int _xOffset;
         private int _yOffset;
@@ -41,6 +42,8 @@ namespace OpenTitlebarButtons.Utils
 
         public ElementHoster(EventManager eventManager, NativeUnmanagedWindow parent)
         {
+            _onChange = (s, e) => Relocate();
+            
             _eventManager = eventManager;
             AutoScaleMode = AutoScaleMode.None;
             ParentWindow = parent;
@@ -72,8 +75,18 @@ namespace OpenTitlebarButtons.Utils
 
         public void Attach(NativeUnmanagedWindow parent = null, bool bringToFront = true)
         {
-            if (parent != null) ParentWindow = parent;
-            ParentWindow.WindowChanged += (s, e) => Relocate();
+            if (parent != null)
+            {
+                if (ParentWindow != null)
+                {
+                    ParentWindow.WindowChanged -= _onChange;
+                    ParentWindow.Dispose();
+                }
+                
+                ParentWindow = parent;
+            }
+            
+            ParentWindow.WindowChanged += _onChange;
             SetWindowPos(new HandleRef(this, Handle), ParentWindow.Handle, 0, 0, 0, 0,
                 SetWindowPosFlags.SWP_NOSIZE | SetWindowPosFlags.SWP_NOMOVE);
             if (!bringToFront) return;
@@ -97,8 +110,9 @@ namespace OpenTitlebarButtons.Utils
 
         public new void Close()
         {
-            Console.WriteLine("Closing");
             _eventManager.RemoveButton(this);
+            ParentWindow.WindowChanged -= _onChange;
+            ParentWindow.Dispose();
             base.Close();
         }
 
